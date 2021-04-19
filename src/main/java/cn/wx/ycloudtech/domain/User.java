@@ -28,7 +28,7 @@ public class User implements Serializable {
     private String userAddr ;
     /** 微信头像 */
     private String userAvatarUrl ;
-    /** 是否被金庸 */
+    /** 是否被禁用 */
     private String userIfBanned ;
     /** 招募资质 */
     private String userIfOrgan ;
@@ -131,11 +131,11 @@ public class User implements Serializable {
     public void setUserAvatarUrl(String userAvatarUrl){
         this.userAvatarUrl = userAvatarUrl;
     }
-    /** 是否被金庸 */
+    /** 是否被禁用 */
     public String getUserIfBanned(){
         return this.userIfBanned;
     }
-    /** 是否被金庸 */
+    /** 是否被禁用 */
     public void setUserIfBanned(String userIfBanned){
         this.userIfBanned = userIfBanned;
     }

@@ -10,12 +10,16 @@ public class Report {
     private String userId ;
     /** 被投诉的ID */
     private String reportedId ;
-    /** 被投诉者类型 */
+    /** 被投诉者类型;0用户；1活动 */
     private String reportType ;
     /** 投诉文本内容 */
     private String reportReason ;
     /** 投诉时间 */
     private String reportTime ;
+    /** 投诉处理状态;0待处理；1投诉成功；2投诉失败 */
+    private String reportStatus ;
+    /** 投诉处理人 */
+    private String reportHandler ;
 
     /** 主键ID;本表主键ID */
     public String getReportId(){
@@ -41,11 +45,11 @@ public class Report {
     public void setReportedId(String reportedId){
         this.reportedId = reportedId;
     }
-    /** 被投诉者类型 */
+    /** 被投诉者类型;0用户；1活动 */
     public String getReportType(){
         return this.reportType;
     }
-    /** 被投诉者类型 */
+    /** 被投诉者类型;0用户；1活动 */
     public void setReportType(String reportType){
         this.reportType = reportType;
     }
@@ -64,5 +68,21 @@ public class Report {
     /** 投诉时间 */
     public void setReportTime(String reportTime){
         this.reportTime = reportTime;
+    }
+    /** 投诉处理状态;0待处理；1投诉成功；2投诉失败 */
+    public String getReportStatus(){
+        return this.reportStatus;
+    }
+    /** 投诉处理状态;0待处理；1投诉成功；2投诉失败 */
+    public void setReportStatus(String reportStatus){
+        this.reportStatus = reportStatus;
+    }
+    /** 投诉处理人 */
+    public String getReportHandler(){
+        return this.reportHandler;
+    }
+    /** 投诉处理人 */
+    public void setReportHandler(String reportHandler){
+        this.reportHandler = reportHandler;
     }
 }

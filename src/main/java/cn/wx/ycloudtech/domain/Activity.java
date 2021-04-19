@@ -6,6 +6,8 @@ public class Activity {
     /** 主键ID;本表主键ID */
     @TableId
     private String actId ;
+    /** 发起者ID */
+    private String userId ;
     /** 活动名称 */
     private String actName ;
     /** 活动地址 */
@@ -18,8 +20,6 @@ public class Activity {
     private String actTimeBegin ;
     /** 活动截止时间 */
     private String actTimeEnd ;
-    /** 用户ID */
-    private String userId ;
     /** 需求人数 */
     private String actUserNum ;
     /** 活动内容与要求 */
@@ -38,6 +38,14 @@ public class Activity {
     /** 主键ID;本表主键ID */
     public void setActId(String actId){
         this.actId = actId;
+    }
+    /** 发起者ID */
+    public String getUserId(){
+        return this.userId;
+    }
+    /** 发起者ID */
+    public void setUserId(String userId){
+        this.userId = userId;
     }
     /** 活动名称 */
     public String getActName(){
@@ -86,14 +94,6 @@ public class Activity {
     /** 活动截止时间 */
     public void setActTimeEnd(String actTimeEnd){
         this.actTimeEnd = actTimeEnd;
-    }
-    /** 用户ID */
-    public String getUserId(){
-        return this.userId;
-    }
-    /** 用户ID */
-    public void setUserId(String userId){
-        this.userId = userId;
     }
     /** 需求人数 */
     public String getActUserNum(){

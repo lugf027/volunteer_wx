@@ -20,6 +20,10 @@ public class UserAct {
     private Double checkLongitude ;
     /** 签到纬度 */
     private Double checkLatitude ;
+    /** 评价内容 */
+    private String reviewContent ;
+    /** 评价时间 */
+    private String reviewTime ;
 
     /** 主键ID;本表主键ID */
     public String getUserActId(){
@@ -84,5 +88,21 @@ public class UserAct {
     /** 签到纬度 */
     public void setCheckLatitude(Double checkLatitude){
         this.checkLatitude = checkLatitude;
+    }
+    /** 评价内容 */
+    public String getReviewContent(){
+        return this.reviewContent;
+    }
+    /** 评价内容 */
+    public void setReviewContent(String reviewContent){
+        this.reviewContent = reviewContent;
+    }
+    /** 评价时间 */
+    public String getReviewTime(){
+        return this.reviewTime;
+    }
+    /** 评价时间 */
+    public void setReviewTime(String reviewTime){
+        this.reviewTime = reviewTime;
     }
 }

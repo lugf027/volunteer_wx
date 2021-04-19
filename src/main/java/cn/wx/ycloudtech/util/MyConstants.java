@@ -32,4 +32,35 @@ public class MyConstants {
     public static final String USER_ORGAN_YES = "1";
     public static final String USER_ORGAN_NOT = "0";
 
+    // 组织机构申请开通状态
+    public static final String ORGAN_SUBMIT = "0";
+    public static final String ORGAN_PASS = "1";
+    public static final String ORGAN_DENY = "2";
+
+    // 活动进行状态
+    public static final String ACT_SUBMIT = "0";
+    public static final String ACT_RECRUITING = "1";
+    public static final String ACT_RECRUIT_SUCCESS = "2";
+    public static final String ACT_RECRUIT_FAIL = "3";
+    public static final String ACT_CANCELED = "4";
+    public static final String ACT_DURING = "5";
+    public static final String ACT_END = "6";
+
+    // 用户-活动状态
+    public static final String USER_ACT_APPLY = "0";
+    public static final String USER_ACT_APPLY_FAIL = "1";
+    public static final String USER_ACT_APPLY_SUCCESS = "2";
+    public static final String USER_ACT_CHECK_NEED = "3";
+    public static final String USER_ACT_CHECKED = "4";
+    public static final String USER_ACT_END = "5";
+
+    // 媒体文件关联类型
+    public static final String FILE_LINK_ORGAN = "0";
+    public static final String FILE_LINK_REVIEW = "1";
+
+    // 投诉状态
+    public static final String REPORT_SUBMIT = "0";
+    public static final String REPORT_SUCCESS = "1";
+    public static final String REPORT_FAIL = "2";
+
 }
