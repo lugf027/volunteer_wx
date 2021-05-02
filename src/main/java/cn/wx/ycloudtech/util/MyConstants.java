@@ -57,10 +57,15 @@ public class MyConstants {
     // 媒体文件关联类型
     public static final String FILE_LINK_ORGAN = "0";
     public static final String FILE_LINK_REVIEW = "1";
+    public static final String FILE_LINK_ACT = "2";
 
     // 投诉状态
     public static final String REPORT_SUBMIT = "0";
     public static final String REPORT_SUCCESS = "1";
     public static final String REPORT_FAIL = "2";
+
+    // Wx端要求的apply结果
+    public static final Integer APPLY_SUBMIT = 0;
+    public static final Integer APPLY_FAIL = 1;
 
 }

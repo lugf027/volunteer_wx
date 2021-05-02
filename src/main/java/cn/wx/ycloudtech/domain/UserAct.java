@@ -1,6 +1,9 @@
 package cn.wx.ycloudtech.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
+
+import java.util.List;
 
 public class UserAct {
     /** 主键ID;本表主键ID */
@@ -24,6 +27,38 @@ public class UserAct {
     private String reviewContent ;
     /** 评价时间 */
     private String reviewTime ;
+
+    @TableField(exist = false)
+    private String organName;
+
+    @TableField(exist = false)
+    private String userName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    private List<String> reviewPhotoList;
+
+    public List<String> getReviewPhotoList() {
+        return reviewPhotoList;
+    }
+
+    public void setReviewPhotoList(List<String> reviewPhotoList) {
+        this.reviewPhotoList = reviewPhotoList;
+    }
+
+    public String getOrganName() {
+        return organName;
+    }
+
+    public void setOrganName(String organName) {
+        this.organName = organName;
+    }
 
     /** 主键ID;本表主键ID */
     public String getUserActId(){

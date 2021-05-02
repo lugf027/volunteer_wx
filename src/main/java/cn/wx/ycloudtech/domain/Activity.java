@@ -1,6 +1,9 @@
 package cn.wx.ycloudtech.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
+
+import java.util.List;
 
 public class Activity {
     /** 主键ID;本表主键ID */
@@ -30,6 +33,39 @@ public class Activity {
     private Double checkLongitude ;
     /** 签到纬度 */
     private Double checkLatitude ;
+
+    @TableField(exist = false)
+    private String organName;
+
+    @TableField(exist = false)
+    private Integer reviewNum;
+
+    @TableField(exist = false)
+    private List<String> actPhotoList;
+
+    public List<String> getActPhotoList() {
+        return actPhotoList;
+    }
+
+    public void setActPhotoList(List<String> actPhotoList) {
+        this.actPhotoList = actPhotoList;
+    }
+
+    public Integer getReviewNum() {
+        return reviewNum;
+    }
+
+    public void setReviewNum(Integer reviewNum) {
+        this.reviewNum = reviewNum;
+    }
+
+    public String getOrganName() {
+        return organName;
+    }
+
+    public void setOrganName(String organName) {
+        this.organName = organName;
+    }
 
     /** 主键ID;本表主键ID */
     public String getActId(){

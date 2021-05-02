@@ -1,10 +1,9 @@
 package cn.wx.ycloudtech.controller;
 
-import cn.wx.ycloudtech.domain.Parameter;
+import cn.wx.ycloudtech.domain.Activity;
 import cn.wx.ycloudtech.domain.User;
-import cn.wx.ycloudtech.service.ParameterService;
-import cn.wx.ycloudtech.service.RedisService;
-import cn.wx.ycloudtech.service.UserService;
+import cn.wx.ycloudtech.domain.UserAct;
+import cn.wx.ycloudtech.service.*;
 import cn.wx.ycloudtech.util.MyConstants;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -22,16 +21,19 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
 @Component("UserController")
 public class UserController {
+//    private final String wxspAppid = "wx5d1a10227e49f3d1";
+//    private final String wxspSecret = "be9300b9431035124df0b182cf8fc629";
 
-    // TODO wx 尚未申请
-    private final String wxspAppid = "";
-    private final String wxspSecret = "";
+    // TODO wx尚未申请
+    private final String wxspAppid = "wx69ea2832a7b0e135";
+    private final String wxspSecret = "ac646d21137c71771501dc21d3364ed9";
     private final String wxspAPI = "https://api.weixin.qq.com/sns/jscode2session";
 
     @Autowired
@@ -46,18 +48,24 @@ public class UserController {
     @Autowired
     private ParameterService parameterService;
 
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private OrganizationService organizationService;
+
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     // 测试能否连接到数据库 --> 2021.04.18 测试通过
-    @PostMapping("/getParamValueByName")
-    public HashMap<String, Object> getParamValueByName(@RequestBody String body) {
-        HashMap<String, Object> res = new HashMap<>();
-        JSONObject object = JSONObject.parseObject(body);
-        String paramName = object.getString("paramName");
-        Parameter parameter = parameterService.getParamValueByName(paramName);
-        res.put("paramValue", parameter.getParamValue());
-        return res;
-    }
+//    @PostMapping("/getParamValueByName")
+//    public HashMap<String, Object> getParamValueByName(@RequestBody String body) {
+//        HashMap<String, Object> res = new HashMap<>();
+//        JSONObject object = JSONObject.parseObject(body);
+//        String paramName = object.getString("paramName");
+//        Parameter parameter = parameterService.getParamValueByName(paramName);
+//        res.put("paramValue", parameter.getParamValue());
+//        return res;
+//    }
 
     @PostMapping("/logout")
     public HashMap<String, Object> logout(@RequestBody String body) {
@@ -153,4 +161,111 @@ public class UserController {
         }
         redisService.saveUserOrAdminBySessionId(user.getSessionKey(), user);
     }
+
+    @PostMapping("/homepage")
+    public HashMap<String, Object> homepage(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+//        JSONObject object = JSONObject.parseObject(body);
+
+        List<Activity> activityList = activityService.getAllActivity();
+
+        for (Activity activity : activityList) {
+            activity.setOrganName(organizationService.getOrgNameByUserId(activity.getUserId()));
+            activity.setActPhotoList(activityService.getPhotoListByActId(activity.getActId()));
+        }
+
+        res.put("list", activityList);
+        return res;
+    }
+
+    @PostMapping("/activity")
+    public HashMap<String, Object> activity(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+//        JSONObject object = JSONObject.parseObject(body);
+
+        List<Activity> activityList = activityService.getAllActivity();
+
+        for (Activity activity : activityList) {
+            activity.setOrganName(organizationService.getOrgNameByUserId(activity.getUserId()));
+            activity.setReviewNum(activityService.getReviewNumByActId(activity.getActId()));
+            activity.setActPhotoList(activityService.getPhotoListByActId(activity.getActId()));
+        }
+
+        res.put("list", activityList);
+        return res;
+    }
+
+    @PostMapping("/actDetail")
+    public HashMap<String, Object> actDetail(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+//        JSONObject object = JSONObject.parseObject(body);
+
+        List<Activity> activityList = activityService.getAllActivity();
+
+        for (Activity activity : activityList) {
+            activity.setOrganName(organizationService.getOrgNameByUserId(activity.getUserId()));
+            activity.setActPhotoList(activityService.getPhotoListByActId(activity.getActId()));
+        }
+
+        res.put("detailData", activityList);
+        return res;
+    }
+
+    @PostMapping("/apply")
+    public HashMap<String, Object> apply(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+        String actId = object.getString("actId");
+
+        Integer addRes = activityService.addUserAct(userId, actId);
+
+        res.put("code", addRes);
+        res.put("message", addRes.equals(MyConstants.APPLY_SUBMIT) ? "报名成功" : "报名失败");
+
+        return res;
+    }
+
+    @PostMapping("/activitycom")
+    public HashMap<String, Object> activityCom(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String actId = object.getString("actId");
+
+        Activity activity = activityService.getActById(actId);
+
+        res.put("actName", activity.getActName());
+        res.put("organName", organizationService.getOrgNameByUserId(activity.getUserId()));
+        res.put("actPhotoList", activityService.getPhotoListByActId(actId));
+        res.put("reviewList", activityService.getReviewsByActId(actId));
+
+        return res;
+    }
+
+    @PostMapping("/comdetail")
+    public HashMap<String, Object> comDetail(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String actId = object.getString("actId");
+        String userId = object.getString("userId");
+
+        Activity activity = activityService.getActById(actId);
+
+        res.put("actName", activity.getActName());
+        res.put("actDemands", activity.getActDemands());
+        res.put("organName", organizationService.getOrgNameByUserId(activity.getUserId()));
+        res.put("actPhotoList", activityService.getPhotoListByActId(actId));
+
+        res.put("userName", userService.getUserById(userId).getUserName());
+
+        UserAct userAct = activityService.getUserActByUserAndActId(userId, actId);
+        if (userAct != null && userAct.getReviewTime() != null && !userAct.getReviewTime().equals("")) {
+            res.put("reviewContent", userAct.getReviewContent());
+            res.put("reviewTime", userAct.getReviewTime());
+            res.put("reviewPhotoList", userAct.getReviewPhotoList());
+        }
+
+        return res;
+    }
+
 }
