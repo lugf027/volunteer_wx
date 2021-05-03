@@ -1,12 +1,15 @@
 package cn.wx.ycloudtech.controller;
 
 import cn.wx.ycloudtech.domain.Activity;
+import cn.wx.ycloudtech.domain.Organization;
 import cn.wx.ycloudtech.domain.User;
 import cn.wx.ycloudtech.domain.UserAct;
 import cn.wx.ycloudtech.service.*;
 import cn.wx.ycloudtech.util.MyConstants;
+import cn.wx.ycloudtech.util.Util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -198,16 +201,13 @@ public class UserController {
     @PostMapping("/actDetail")
     public HashMap<String, Object> actDetail(@RequestBody String body) {
         HashMap<String, Object> res = new HashMap<>();
-//        JSONObject object = JSONObject.parseObject(body);
+        JSONObject object = JSONObject.parseObject(body);
+        String actId = object.getString("actId");
+        Activity actRes = activityService.getActById(actId);
+        actRes.setActPhotoList(activityService.getPhotoListByActId(actId));
+        actRes.setOrganName(organizationService.getOrgNameByUserId(actRes.getUserId()));
 
-        List<Activity> activityList = activityService.getAllActivity();
-
-        for (Activity activity : activityList) {
-            activity.setOrganName(organizationService.getOrgNameByUserId(activity.getUserId()));
-            activity.setActPhotoList(activityService.getPhotoListByActId(activity.getActId()));
-        }
-
-        res.put("detailData", activityList);
+        res.put("detailData", actRes);
         return res;
     }
 
@@ -221,7 +221,7 @@ public class UserController {
         Integer addRes = activityService.addUserAct(userId, actId);
 
         res.put("code", addRes);
-        res.put("message", addRes.equals(MyConstants.APPLY_SUBMIT) ? "报名成功" : "报名失败");
+//        res.put("message", addRes.equals(MyConstants.APPLY_SUBMIT) ? "报名成功" : "报名失败");
 
         return res;
     }
@@ -265,6 +265,107 @@ public class UserController {
             res.put("reviewPhotoList", userAct.getReviewPhotoList());
         }
 
+        return res;
+    }
+
+    @PostMapping("/applyfor")
+    public HashMap<String, Object> applyfor(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+        Organization organizationNew = JSON.parseObject(body, new TypeReference<Organization>() {
+        });
+
+        String userId = organizationNew.getUserId();
+        if (organizationService.ifUserHasOrgan(userId)) {
+            // TODO 前端说不做管理端了，就没招募者的资质审核了；这里先这样写了，留作拓展。
+            res.put("code", "1");
+//            res.put("message", "认证失败");
+        } else {
+            organizationNew.setOrganId(UUID.randomUUID().toString());
+            organizationNew.setOrganStatus(MyConstants.ORGAN_PASS);
+            organizationService.addNewOrgan(organizationNew);
+            // TODO 前端说不做管理端了，就没招募者的资质审核了；这里先这样写了，留作拓展。
+            res.put("code", "0");
+//            res.put("message", "认证成功");
+        }
+        return res;
+    }
+
+    @PostMapping("/createact")
+    public HashMap<String, Object> createAct(@RequestBody String body) {  // 用户发起的活动
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+//        String actId = object.getString("actId");
+        List<Activity> activityList = activityService.getUserOwnedAct(userId);
+        res.put("list", activityList);
+        return res;
+    }
+
+    @PostMapping("/createdetail")
+    public HashMap<String, Object> createDetail(@RequestBody String body) {  // 用户发起活动...
+        HashMap<String, Object> res = new HashMap<>();
+        Activity actNew = JSON.parseObject(body, new TypeReference<Activity>() {
+        });
+        actNew.setActId(UUID.randomUUID().toString());
+        activityService.addActNew(actNew);
+
+        res.put("code", "0");
+//        res.put("message", "提交成功");
+        return res;
+    }
+
+    @PostMapping("/myactivity")
+    public HashMap<String, Object> myActivity(@RequestBody String body) {  // 用户参与的活动
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+//        String actId = object.getString("actId");
+        List<Activity> activityList = activityService.getUserJoinedAct(userId);
+        res.put("list", activityList);
+        return res;
+    }
+
+    @PostMapping("/check")
+    public HashMap<String, Object> check(@RequestBody String body) {  // 用户发起活动...
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+        String actId = object.getString("actId");
+        UserAct userAct = activityService.getUserActByUserAndActId(userId, actId);
+        if (userAct != null) {
+            if (userAct.getApplyStatus().equals(MyConstants.USER_ACT_CHECK_NEED)) {  // 待签到
+                userAct.setCheckTime(MyConstants.DATETIME_FORMAT.format(new Date()));
+                userAct.setApplyStatus(MyConstants.USER_ACT_CHECKED);
+                res.put("code", "0");
+            } else/* if(userAct.getApplyStatus().equals(MyConstants.USER_ACT_CHECKED))*/ { // 时间点无需签到
+                res.put("code", "1");
+            }
+        } else { // 无需签到
+            res.put("code", "1");
+        }
+        return res;
+    }
+
+    @PostMapping("/createreview")
+    public HashMap<String, Object> createReview(@RequestBody String body) {  // 用户发起活动...
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String actId = object.getString("actId");
+        String userId = object.getString("userId");
+        UserAct userAct = activityService.getUserActByUserAndActId(userId, actId);
+        if (userAct != null) {
+            if ((userAct.getApplyStatus().equals(MyConstants.USER_ACT_CHECKED) ||
+                    userAct.getApplyStatus().equals(MyConstants.USER_ACT_END)) &&
+                    Util.isEmpty(userAct.getReviewTime())) {  // 可以评论
+                userAct.setReviewTime(MyConstants.DATETIME_FORMAT.format(new Date()));
+                userAct.setReviewContent(object.getString("reviewContent"));
+                res.put("code", "0");
+            } else/* if(userAct.getApplyStatus().equals(MyConstants.USER_ACT_CHECKED))*/ { // 时间点不能评论
+                res.put("code", "1");
+            }
+        } else { // 无需签到
+            res.put("code", "1");
+        }
         return res;
     }
 

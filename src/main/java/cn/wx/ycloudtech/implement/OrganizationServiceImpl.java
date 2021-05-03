@@ -24,4 +24,17 @@ public class OrganizationServiceImpl implements OrganizationService {
         else
             return organizationList.get(0).getOrganName();
     }
+
+    @Override
+    public Integer addNewOrgan(Organization organizationNew) {
+        return organizationMapper.insert(organizationNew);
+    }
+
+    @Override
+    public boolean ifUserHasOrgan(String userId) {
+        List<Organization> organizationList = organizationMapper.selectList(new EntityWrapper<Organization>()
+                .eq("USER_ID", userId));
+        // 记录为空，用户还没有成为招募者
+        return !organizationList.isEmpty();
+    }
 }

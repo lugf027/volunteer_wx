@@ -103,6 +103,34 @@ public class ActivityServiceImpl implements ActivityService {
         }
     }
 
+    @Override
+    public List<Activity> getUserOwnedAct(String userId) {
+        return activityMapper.selectList(new EntityWrapper<Activity>()
+                .eq("USER_ID", userId));
+    }
+
+    @Override
+    public List<Activity> getUserJoinedAct(String userId) {
+        List<UserAct> userActList = userActMapper.selectList(new EntityWrapper<UserAct>()
+                .eq("USER_ID", userId));
+        List<Activity> actListRes = new ArrayList<>();
+        for (UserAct userAct : userActList) {
+            // TODO 这里其实有活动删除的问题
+            actListRes.add(getActById(userAct.getActId()));
+        }
+        return actListRes;
+    }
+
+    @Override
+    public Integer addActNew(Activity actNew) {
+        return activityMapper.insert(actNew);
+    }
+
+    @Override
+    public Integer addFileNew(File fileDomain) {
+        return fileMapper.insert(fileDomain);
+    }
+
     /**
      * 根绝linkId与linkType 获得url list
      */

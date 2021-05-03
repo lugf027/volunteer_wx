@@ -45,10 +45,10 @@ public class WebSecurityConfig {
 //                    .antMatchers("/**").permitAll()
 
                     // 开启权限拦截
-                    .antMatchers("/user/login", "/admin/login", "/resources/**").permitAll()
+                    .antMatchers("/user/login", "/admin/login", "/resources/**", "/user/**").permitAll()
                     .antMatchers("/user/getParamValueByName").permitAll()  // 2021.04.18 测试数据库连接
                     .antMatchers("/admin/**", "/admin/**/**").hasRole("ADMIN")
-                    .antMatchers("/user/**", "/user/**/**").hasRole("USER")
+//                    .antMatchers("/user/**", "/user/**/**").hasRole("USER")
                     .antMatchers("/visitor/**", "/visitor/**").hasRole("VISITOR")
                     .and()
                     .csrf()
