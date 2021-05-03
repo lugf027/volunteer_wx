@@ -28,4 +28,14 @@ public interface ActivityService {
     Integer addActNew(Activity actNew);
 
     Integer addFileNew(File fileDomain);
+
+    List<Activity> getAllActNeedUpdateToday(String dateToday, String dateType);
+
+    Integer updateOneAct(Activity activity);
+
+    Integer getUserActNumByActId(String actId);
+
+    List<UserAct> getUserActByActId(String actId);
+
+    Integer updateUserAct(UserAct userAct);
 }

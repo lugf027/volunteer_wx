@@ -64,6 +64,17 @@ public class ActivityServiceImpl implements ActivityService {
         // TODO 这里会有多线程问题，亦即获得的 userActNum 可能过时了
         if (Integer.parseInt(activity.getActUserNum()) > userActNum) {
             userActMapper.insert(userAct);
+
+            if (1 == Integer.parseInt(activity.getActUserNum()) - userActNum) {
+                List<UserAct> userActList = getUserActByActId(activity.getActId());
+                for (UserAct userActToUpdate : userActList) {
+                    if (userActToUpdate.getApplyStatus().equals(MyConstants.USER_ACT_APPLY)) {
+                        userActToUpdate.setApplyStatus(MyConstants.USER_ACT_APPLY_SUCCESS);
+                        updateUserAct(userActToUpdate);
+                    }
+                }
+            }
+
             return MyConstants.APPLY_SUBMIT;
         } else {
             return MyConstants.APPLY_FAIL;
@@ -129,6 +140,34 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Integer addFileNew(File fileDomain) {
         return fileMapper.insert(fileDomain);
+    }
+
+    @Override
+    public List<Activity> getAllActNeedUpdateToday(String dateToday, String dateType) {
+        return activityMapper.selectList(new EntityWrapper<Activity>()
+                .eq(dateType, dateToday));
+    }
+
+    @Override
+    public Integer updateOneAct(Activity activity) {
+        return activityMapper.updateById(activity);
+    }
+
+    @Override
+    public Integer getUserActNumByActId(String actId) {
+        return userActMapper.selectCount(new EntityWrapper<UserAct>()
+                .eq("ACT_ID", actId));
+    }
+
+    @Override
+    public List<UserAct> getUserActByActId(String actId) {
+        return userActMapper.selectList(new EntityWrapper<UserAct>()
+                .eq("ACT_ID", actId));
+    }
+
+    @Override
+    public Integer updateUserAct(UserAct userAct) {
+        return userActMapper.updateById(userAct);
     }
 
     /**

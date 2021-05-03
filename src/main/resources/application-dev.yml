@@ -35,6 +35,10 @@ xcloud:
   uploadPath: F:/attach_file/wx/  # 这里修改下
   staticPath: resources
 
+jobs:
+  act:
+    update: 0 1 0 * * ?
+
 ports:
   http: 8080
   https: 443
