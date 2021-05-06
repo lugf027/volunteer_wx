@@ -34,6 +34,9 @@ public class UserAct {
     @TableField(exist = false)
     private String userName;
 
+    @TableField(exist = false)
+    private List<String> reviewPhotoList;
+
     public String getUserName() {
         return userName;
     }
@@ -41,8 +44,6 @@ public class UserAct {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    private List<String> reviewPhotoList;
 
     public List<String> getReviewPhotoList() {
         return reviewPhotoList;
