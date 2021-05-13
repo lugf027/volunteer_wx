@@ -49,9 +49,6 @@ public class UserController {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ParameterService parameterService;
-
-    @Autowired
     private ActivityService activityService;
 
     @Autowired
@@ -59,16 +56,9 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    // 测试能否连接到数据库 --> 2021.04.18 测试通过
-//    @PostMapping("/getParamValueByName")
-//    public HashMap<String, Object> getParamValueByName(@RequestBody String body) {
-//        HashMap<String, Object> res = new HashMap<>();
-//        JSONObject object = JSONObject.parseObject(body);
-//        String paramName = object.getString("paramName");
-//        Parameter parameter = parameterService.getParamValueByName(paramName);
-//        res.put("paramValue", parameter.getParamValue());
-//        return res;
-//    }
+    /***********************************************************
+     * 登录注册相关
+     **********************************************************/
 
     @PostMapping("/logout")
     public HashMap<String, Object> logout(@RequestBody String body) {
@@ -84,8 +74,8 @@ public class UserController {
         return ret;
     }
 
-    @PostMapping("/login")
-    public HashMap<String, Object> login(@RequestBody String body) {
+    @PostMapping("/loginWithWechat")
+    public HashMap<String, Object> loginWithWechat(@RequestBody String body) {
         HashMap<String, Object> ret = new HashMap<>();
         JSONObject object = JSONObject.parseObject(body);
 
@@ -164,6 +154,73 @@ public class UserController {
         }
         redisService.saveUserOrAdminBySessionId(user.getSessionKey(), user);
     }
+
+    /**
+     * 账号密码登录
+     *
+     * @param body 账号密码
+     * @return 登陆验证结果
+     */
+    @PostMapping("/login")
+    public HashMap<String, Object> login(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userName = object.getString("userName");
+        String pwd = object.getString("pwd");
+
+        User user = userService.getUserByPwd(userName, pwd);
+        if (user == null) {
+            res.put("code", MyConstants.APPLY_FAIL);
+            return res;
+        }
+        res.put("user", user);
+        res.put("code", MyConstants.APPLY_SUCCESS);
+
+        // 登录校验码相关
+        String userSessionKey = UUID.randomUUID().toString();
+        user.setSessionKey(userSessionKey);
+        try {
+            redisService.delSessionId(user.getSessionKey());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        redisService.saveUserOrAdminBySessionId(user.getSessionKey(), user);
+        res.put("sessionKey", user.getSessionKey());
+        userService.updateUser(user);
+
+        return res;
+    }
+
+    @PostMapping("/signin")
+    public HashMap<String, Object> signIn(@RequestBody String body) {
+        HashMap<String, Object> res = new HashMap<>();
+        User user = JSON.parseObject(body, new TypeReference<User>() {
+        });
+
+        // 登陆账户名重复问题
+        // todo 注意微信直接授权登录的用户，也要判断一下；目前还没用到直接授权
+        int userNameNum = userService.getUserCountByName(user.getUserName());
+        if (userNameNum > 0) {
+            res.put("code", MyConstants.APPLY_FAIL);
+            return res;
+        }
+
+        // 登录校验码、主键
+        user.setSessionKey(UUID.randomUUID().toString());
+        user.setUserId(UUID.randomUUID().toString());
+
+        userService.insertUser(user);
+        redisService.saveUserOrAdminBySessionId(user.getSessionKey(), user);
+
+        res.put("user", user);
+        res.put("code", MyConstants.APPLY_SUCCESS);
+        res.put("sessionKey", user.getSessionKey());
+        return res;
+    }
+
+    /***********************************************************
+     * 其他
+     **********************************************************/
 
     @PostMapping("/homepage")
     public HashMap<String, Object> homepage(@RequestBody String body) {

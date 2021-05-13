@@ -8,4 +8,8 @@ public interface UserService {
     int insertUser(User user);
 
     int updateUser(User user);
+
+    User getUserByPwd(String userName, String pwd);
+
+    int getUserCountByName(String userName);
 }
