@@ -56,9 +56,9 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    /***********************************************************
+    /***************************************************************************************
      * 登录注册相关
-     **********************************************************/
+     ***************************************************************************************/
 
     @PostMapping("/logout")
     public HashMap<String, Object> logout(@RequestBody String body) {
@@ -218,9 +218,10 @@ public class UserController {
         return res;
     }
 
-    /***********************************************************
+    /***************************************************************************************
      * 其他
-     **********************************************************/
+     * 核对于腾讯文档 https://docs.qq.com/sheet/DUE5wcnh0SXRBUEFt
+     ***************************************************************************************/
 
     @PostMapping("/homepage")
     public HashMap<String, Object> homepage(@RequestBody String body) {
