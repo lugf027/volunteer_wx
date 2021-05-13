@@ -1,8 +1,9 @@
-package cn.wx.ycloudtech.util;
+package cn.wx.ycloudtech.task;
 
 import cn.wx.ycloudtech.domain.Activity;
 import cn.wx.ycloudtech.domain.UserAct;
 import cn.wx.ycloudtech.service.ActivityService;
+import cn.wx.ycloudtech.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 

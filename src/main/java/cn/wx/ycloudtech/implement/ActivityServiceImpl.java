@@ -75,7 +75,7 @@ public class ActivityServiceImpl implements ActivityService {
                 }
             }
 
-            return MyConstants.APPLY_SUBMIT;
+            return MyConstants.APPLY_SUCCESS;
         } else {
             return MyConstants.APPLY_FAIL;
         }

@@ -55,7 +55,7 @@ public class FileController {
                     fileDomain.setLinkType(request.getParameter("linkType"));
                     activityService.addFileNew(fileDomain);
 
-                    response.put("code", MyConstants.APPLY_SUBMIT.toString());
+                    response.put("code", MyConstants.APPLY_SUCCESS.toString());
                 }
             } catch (Exception e) {
                 e.printStackTrace();

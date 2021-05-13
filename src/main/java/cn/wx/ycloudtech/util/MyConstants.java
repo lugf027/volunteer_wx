@@ -65,7 +65,7 @@ public class MyConstants {
     public static final String REPORT_FAIL = "2";
 
     // Wx端要求的apply结果
-    public static final Integer APPLY_SUBMIT = 0;
+    public static final Integer APPLY_SUCCESS = 0;
     public static final Integer APPLY_FAIL = 1;
 
 }
