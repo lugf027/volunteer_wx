@@ -1,23 +1,23 @@
 server:
-  port: 8080
+  port: 8081
   servlet:
     context-path: /wx
   tomcat:
     uri-encoding: UTF-8
-  ssl:
-    key-store: classpath:www.ycloudtech.cn.jks
-    key-alias: www.ycloudtech.cn
-    key-store-type: JKS
-    key-store-password: 468zw3ia31l20
-    enabled: true
-    protocol: TLS
+#  ssl:
+#    key-store: classpath:www.ycloudtech.cn.jks
+#    key-alias: www.ycloudtech.cn
+#    key-store-type: JKS
+#    key-store-password: 468zw3ia31l20
+#    enabled: true
+#    protocol: TLS
 
 Spring:
   datasource:
     # y-cloud-tech 补上数据库名称
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/voluntary_wx?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/voluntary_test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: root       # 用户
-    password: 11020028   # 密码
+    password: root@000   # 密码
     driver-class-name: net.sf.log4jdbc.DriverSpy
     hikari:
       max-lifetime: 60000

@@ -1,5 +1,6 @@
 package cn.wx.ycloudtech.domain;
 
+import cn.wx.ycloudtech.util.MyConstants;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 public class File {
@@ -9,7 +10,7 @@ public class File {
     /** 关联ID */
     private String linkId ;
     /** 关联类型 */
-    private String linkType ;
+    private String linkType = MyConstants.FILE_LINK_ORGAN;
     /** 文件路径 */
     private String fileAddr ;
     /** 上传时间 */

@@ -1,5 +1,6 @@
 package cn.wx.ycloudtech.domain;
 
+import cn.wx.ycloudtech.util.MyConstants;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
@@ -28,7 +29,7 @@ public class Activity {
     /** 活动内容与要求 */
     private String actDemands ;
     /** 活动状态;0：已提交；1：招募中；2：招募成功待开始；3：招募失败待处理；4：已取消；5：进行中；6：已结束 */
-    private String actStatus ;
+    private String actStatus = MyConstants.ACT_SUBMIT;
     /** 签到经度 */
     private Double checkLongitude ;
     /** 签到纬度 */

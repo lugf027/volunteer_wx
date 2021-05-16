@@ -1,5 +1,6 @@
 package cn.wx.ycloudtech.domain;
 
+import cn.wx.ycloudtech.util.MyConstants;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
@@ -16,7 +17,7 @@ public class UserAct {
     /** 申请时间 */
     private String applyTime ;
     /** 申请状态;0：已提交申请；1：活动已取消；2：活动待开始；3：待签到；4：进行中；5：已完成 */
-    private String applyStatus ;
+    private String applyStatus = MyConstants.USER_ACT_APPLY;
     /** 签到时间 */
     private String checkTime ;
     /** 签到经度 */

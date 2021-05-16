@@ -176,14 +176,14 @@ public class UserController {
         res.put("user", user);
         res.put("code", MyConstants.APPLY_SUCCESS);
 
-        // 登录校验码相关
-        String userSessionKey = UUID.randomUUID().toString();
-        user.setSessionKey(userSessionKey);
         try {
             redisService.delSessionId(user.getSessionKey());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        // 登录校验码相关
+        String userSessionKey = UUID.randomUUID().toString();
+        user.setSessionKey(userSessionKey);
         redisService.saveUserOrAdminBySessionId(user.getSessionKey(), user);
         res.put("sessionKey", user.getSessionKey());
         userService.updateUser(user);
@@ -423,6 +423,69 @@ public class UserController {
             }
         } else { // 无需签到
             res.put("code", "1");
+        }
+        return res;
+    }
+
+
+    /***************************************************************************************
+     * 其他
+     * 2021.05.14后新增四个接口
+     ***************************************************************************************/
+    
+    @PostMapping("/admin/applylist")
+    public HashMap<String, Object> AdminApplyList(@RequestBody String body) {  // 若是管理员的ID，就返回待认证列表。。。
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+        User user = userService.getUserById(userId);
+        if (user.getUserIfSuper().equals(MyConstants.USER_SUPER_YES)) {
+            res.put("code", 1);
+            List<Organization> organizationList =
+                    organizationService.getAllSubmitOrgan();
+            res.put("list", organizationList);
+        } else {
+            res.put("code", 0);
+        }
+        return res;
+    }
+
+    @PostMapping("/admin/applydetail")
+    public HashMap<String, Object> AdminApplyDetail(@RequestBody String body) {  // 直接返回用户userId对应的申请组织列表
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+        List<Organization> organizationList = organizationService.getOrganByUserId(userId);
+        res.put("list", organizationList);
+        return res;
+    }
+
+    @PostMapping("/admin/required")
+    public HashMap<String, Object> AdminRequired(@RequestBody String body) {  // 用户0通过认证；1否定认证。没看出来跟下面的区别
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+        List<Organization> organizationList = organizationService.getOrganByUserId(userId);
+        if (organizationList.size() > 0 &&
+                organizationList.get(0).getOrganStatus().equals(MyConstants.ORGAN_PASS)) {
+            res.put("code", 1);
+        } else {
+            res.put("code", 0);
+        }
+        return res;
+    }
+
+    @PostMapping("/organized")
+    public HashMap<String, Object> organized(@RequestBody String body) {  // 判断用户是否是招募者0是；1否。没看出来跟上面得区别
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+        List<Organization> organizationList = organizationService.getOrganByUserId(userId);
+        if (organizationList.size() > 0 &&
+                organizationList.get(0).getOrganStatus().equals(MyConstants.ORGAN_PASS)) {
+            res.put("code", 1);
+        } else {
+            res.put("code", 0);
         }
         return res;
     }

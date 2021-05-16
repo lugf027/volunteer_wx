@@ -1,5 +1,6 @@
 package cn.wx.ycloudtech.domain;
 
+import cn.wx.ycloudtech.util.MyConstants;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 public class Organization {
@@ -17,7 +18,7 @@ public class Organization {
     /** 组织简介 */
     private String organIntro ;
     /** 组织申请状态;0：提交申请待审核；1：通过；2：失败 */
-    private String organStatus ;
+    private String organStatus = MyConstants.ORGAN_SUBMIT;
 
     /** 主键ID;本表主键ID */
     public String getOrganId(){

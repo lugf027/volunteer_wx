@@ -1,5 +1,6 @@
 package cn.wx.ycloudtech.domain;
 
+import cn.wx.ycloudtech.util.MyConstants;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 public class Report {
@@ -11,13 +12,13 @@ public class Report {
     /** 被投诉的ID */
     private String reportedId ;
     /** 被投诉者类型;0用户；1活动 */
-    private String reportType ;
+    private String reportType;
     /** 投诉文本内容 */
     private String reportReason ;
     /** 投诉时间 */
     private String reportTime ;
     /** 投诉处理状态;0待处理；1投诉成功；2投诉失败 */
-    private String reportStatus ;
+    private String reportStatus = MyConstants.REPORT_SUBMIT;
     /** 投诉处理人 */
     private String reportHandler ;
 
